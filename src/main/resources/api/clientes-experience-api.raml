@@ -1,0 +1,176 @@
+#%RAML 1.0
+title: Clientes Experience API
+version: v1
+baseUri: /clientes
+mediaType: application/json
+
+types:
+  Region:
+    type: object
+    properties:
+      idRegion: integer
+      descripcion: string
+
+  Cliente:
+    type: object
+    properties:
+      id?: integer
+      nombre: string
+      apellido: string
+      email: string
+      creado?: datetime
+      region: Region
+
+  ClienteRequest:
+    type: object
+    properties:
+      nombre: string
+      apellido: string
+      email: string
+      region:
+        type: object
+        properties:
+          idRegion: integer
+
+  ErrorResponse:
+    type: object
+    properties:
+      code: string
+      message: string
+
+/clientes:
+
+  get:
+    description: API para EBS
+    responses:
+      200:
+        body:
+          application/json:
+            type: Cliente[]
+      500:
+        body:
+          application/json:
+            type: ErrorResponse
+
+  post:
+    description: API para frontend - crea cliente
+    body:
+      application/json:
+        type: ClienteRequest
+    responses:
+      201:
+        body:
+          application/json:
+            type: ErrorResponse
+            example:
+              code: CREATED
+              message: OK
+      400:
+        body:
+          application/json:
+            type: ErrorResponse
+            example:
+              code: BAD_REQUEST
+              message: Datos inválidos
+      409:
+        body:
+          application/json:
+            type: ErrorResponse
+            example:
+              code: CONFLICT
+              message: El cliente ya existe
+      500:
+        body:
+          application/json:
+            type: ErrorResponse
+            example:
+              code: INTERNAL_SERVER_ERROR
+              message: Error interno del servidor
+
+/clientes/{id}:
+
+  uriParameters:
+    id:
+      type: integer
+
+  get:
+    description: API para frontend - obtiene un cliente
+    responses:
+      200:
+        body:
+          application/json:
+            type: Cliente
+      404:
+        body:
+          application/json:
+            type: ErrorResponse
+            example:
+              code: NOT_FOUND
+              message: Cliente no encontrado
+      500:
+        body:
+          application/json:
+            type: ErrorResponse
+            example:
+              code: INTERNAL_SERVER_ERROR
+              message: Error interno del servidor
+
+  put:
+    description: API para frontend - actualiza cliente
+    body:
+      application/json:
+        type: ClienteRequest
+    responses:
+      200:
+        body:
+          application/json:
+            type: ErrorResponse
+            example:
+              code: OK
+              message: OK
+      400:
+        body:
+          application/json:
+            type: ErrorResponse
+            example:
+              code: BAD_REQUEST
+              message: Datos inválidos
+      404:
+        body:
+          application/json:
+            type: ErrorResponse
+            example:
+              code: NOT_FOUND
+              message: Cliente no encontrado
+      500:
+        body:
+          application/json:
+            type: ErrorResponse
+            example:
+              code: INTERNAL_SERVER_ERROR
+              message: Error interno del servidor
+
+  delete:
+    description: API para frontend - elimina cliente
+    responses:
+      200:
+        body:
+          application/json:
+            type: ErrorResponse
+            example:
+              code: OK
+              message: OK
+      404:
+        body:
+          application/json:
+            type: ErrorResponse
+            example:
+              code: NOT_FOUND
+              message: Cliente no encontrado
+      500:
+        body:
+          application/json:
+            type: ErrorResponse
+            example:
+              code: INTERNAL_SERVER_ERROR
+              message: Error interno del servidor
